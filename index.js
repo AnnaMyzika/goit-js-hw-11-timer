@@ -3,19 +3,11 @@ const refs = {
     hours: document.querySelector('span[data-value="hours"]'),
     mins: document.querySelector('span[data-value="mins"]'),
     secs: document.querySelector('span[data-value="secs"]'),
-}
-
-const targetDate = new Date("Jan 01, 2021");
-const countdownTimer = {
-    start() {
-        setInterval(() => {
-            const delta = targetDate.getTime() - Date.now();
-            updateClockFace(delta);
-        }, 1000);
-    },
 };
 
-countdownTimer.start();
+function pad(value) {
+    return String(value).padStart(2, "0");
+};
 
 function updateClockFace(time) {
     const days = pad(Math.floor(time / (1000 * 60 * 60 * 24)));
@@ -28,9 +20,30 @@ function updateClockFace(time) {
     refs.secs.textContent = `${secs}`;
 };
 
-function pad(value) {
-    return String(value).padStart(2, "0");
-};
 
 
+class CountdownTimer {
+  constructor({ selector, targetDate }) {
+    this.selector = selector;
+    this.targetDate = targetDate;
+  }
+
+  start() {
+    updateClockFace(0);
+
+    setInterval(() => {
+      const delta = this.targetDate - Date.now();
+
+      updateClockFace(delta);
+    }, 1000);
+  }
+}
+
+const countdownTimer = new CountdownTimer({
+  selector: '#timer-1',
+  targetDate: new Date('Jan 01, 2021'),
+});
+
+
+countdownTimer.start();
 
